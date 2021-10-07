@@ -1,9 +1,20 @@
-node{
-  stage('SCM Checkout'){
-        git 'https://github.com/rouchoum/spark-job1'
+pipeline {
+    agent any
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+    stages {
+        stage('Build and deploy project (jar) ') {
+            steps {
+                    sh 'make build_deploy'
+                }
+            }
+        stage('Packaging') {
+            steps {
+                        sh 'HTTP_PROXY=${JENKINS_HTTP_PROXY} \
+                        make package'
+            }
         }
-        
-  stage ('Compile-Package'){
-         sh 'mvn package'
-               }
+
+    }
 }
